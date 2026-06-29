@@ -1,14 +1,33 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { beliefs, church, ministries, navItems, sermons, visitDetails } from '../../data/site';
 import styles from '../../styles/Site.module.css';
 
 export function Layout({ children }) {
   const router = useRouter();
   const currentYear = new Date().getFullYear();
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [hasThemeLoaded, setHasThemeLoaded] = useState(false);
+
+  useEffect(() => {
+    const savedTheme = window.localStorage.getItem('addis-kidan-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    setIsDarkMode(savedTheme ? savedTheme === 'dark' : prefersDark);
+    setHasThemeLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasThemeLoaded) {
+      return;
+    }
+
+    window.localStorage.setItem('addis-kidan-theme', isDarkMode ? 'dark' : 'light');
+  }, [hasThemeLoaded, isDarkMode]);
 
   return (
-    <div className={styles.site}>
+    <div className={`${styles.site} ${isDarkMode ? styles.dark : ''}`}>
       <header className={styles.header}>
         <Link className={styles.brand} href="/">
           <span className={styles.brandMark}>AK</span>
@@ -28,6 +47,15 @@ export function Layout({ children }) {
             </Link>
           ))}
         </nav>
+        <button
+          aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          aria-pressed={isDarkMode}
+          className={styles.themeToggle}
+          onClick={() => setIsDarkMode((current) => !current)}
+          type="button"
+        >
+          <span className={styles.toggleIcon} aria-hidden="true" />
+        </button>
       </header>
       <main>{children}</main>
       <footer className={styles.footer}>
