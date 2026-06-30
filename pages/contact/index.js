@@ -21,7 +21,14 @@ export default function ContactPage() {
           </article>
           <article className={styles.contactBlock}>
             <h3>Phone</h3>
-            <p><a href={church.phoneHref}>{church.phone}</a></p>
+            <div className={styles.phoneList}>
+              {church.phones.map((phone) => (
+                <p key={phone.href}>
+                  <span>{phone.label}</span>
+                  <a href={phone.href}>{phone.number}</a>
+                </p>
+              ))}
+            </div>
           </article>
           <article className={styles.contactBlock}>
             <h3>Email</h3>

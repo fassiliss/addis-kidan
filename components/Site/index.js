@@ -59,18 +59,50 @@ export function Layout({ children }) {
       </header>
       <main>{children}</main>
       <footer className={styles.footer}>
-        <div>
-          <strong>{church.name}</strong>
-          <p>{church.amharicName}</p>
-          <p>© {currentYear} {church.shortName}</p>
-        </div>
-        <div className={styles.footerContact}>
-          <p>{church.address}</p>
-          <p>
-            <a href={church.phoneHref}>{church.phone}</a>
-            <span> · </span>
+        <div className={styles.footerTop}>
+          <div className={styles.footerBrand}>
+            <Link className={styles.footerLogo} href="/">
+              <span className={styles.brandMark}>AK</span>
+              <span>
+                <strong>{church.name}</strong>
+                <small>{church.amharicName}</small>
+              </span>
+            </Link>
+            <p>
+              A Christ-centered Ethiopian Evangelical church serving families in
+              Virginia Beach, Norfolk, and Hampton Roads.
+            </p>
+          </div>
+          <div className={styles.footerColumn}>
+            <h2>Visit</h2>
+            <p>{church.serviceTime}</p>
+            <p>{church.address}</p>
+            <a className={styles.footerButton} href={church.mapUrl} target="_blank" rel="noreferrer">
+              Open Maps
+            </a>
+          </div>
+          <nav className={styles.footerColumn} aria-label="Footer navigation">
+            <h2>Pages</h2>
+            {navItems.map((item) => (
+              <Link href={item.href} key={item.href}>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <div className={styles.footerColumn}>
+            <h2>Contact</h2>
+            {church.phones.map((phone) => (
+              <p key={phone.href}>
+                <span>{phone.label}</span>
+                <a href={phone.href}>{phone.number}</a>
+              </p>
+            ))}
             <a href={`mailto:${church.email}`}>{church.email}</a>
-          </p>
+          </div>
+        </div>
+        <div className={styles.footerBottom}>
+          <p>© {currentYear} {church.shortName}. All rights reserved.</p>
+          <p>{church.city}</p>
         </div>
       </footer>
     </div>
@@ -158,6 +190,8 @@ export function Ministries() {
 }
 
 export function VisitSnapshot() {
+  const primaryPhone = church.phones[0];
+
   return (
     <section className={styles.visitBand}>
       <div className={styles.visitIntro}>
@@ -171,7 +205,7 @@ export function VisitSnapshot() {
           <a className={styles.primaryButton} href={church.mapUrl} target="_blank" rel="noreferrer">
             Open Maps
           </a>
-          <a className={styles.outlineButton} href={church.phoneHref}>
+          <a className={styles.outlineButton} href={primaryPhone.href}>
             Call the Church
           </a>
         </div>
